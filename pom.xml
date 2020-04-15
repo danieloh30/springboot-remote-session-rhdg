@@ -7,146 +7,75 @@
 	<description>Demo project for Spring Boot with RHDG</description>
 
   <properties>
-    <!-- <snowdrop-bom.version>2.1.12.Final</snowdrop-bom.version>
-    <spring-boot.version>2.1.12.RELEASE</spring-boot.version> -->
-
-    <version.infinispan>10.1.5.Final-redhat-00001</version.infinispan>
-    <infinispan.starters.version>2.2.3.Final-redhat-00001</infinispan.starters.version>
-    <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
-
+    <version.infinispan>10.1.5.Final-redhat-00001</version.infinispan>   
+    <version.spring.boot>2.2.5.RELEASE</version.spring.boot> 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
-  <!-- <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>me.snowdrop</groupId>
-        <artifactId>spring-boot-bom</artifactId>
-        <version>${snowdrop-bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement> -->
-
   <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-bom</artifactId>
-            <version>${version.infinispan}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
-            <version>${infinispan.starters.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>transaction-api</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-            <version>1.1.0.redhat-1</version>
-        </dependency>
+       <dependency>
+           <groupId>org.infinispan</groupId>
+           <artifactId>infinispan-bom</artifactId>
+           <version>${version.infinispan}</version>
+           <type>pom</type>
+           <scope>import</scope>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-parent</artifactId>
+           <version>${version.spring.boot}</version>
+           <type>pom</type>
+           <scope>import</scope>
+       </dependency>
+       <dependency>
+           <groupId>org.infinispan</groupId>
+           <artifactId>infinispan-spring-boot-starter</artifactId>
+           <version>2.2.3.Final-redhat-00001</version>
+       </dependency>
     </dependencies>
-</dependencyManagement>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring-boot.version}</version>
+      <version>${version.spring.boot}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring-boot.version}</version>
+      <version>${version.spring.boot}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
-      <version>${spring-boot.version}</version>
-    </dependency>
+      <version>${version.spring.boot}</version>
+    </dependency> -->
     <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+        <version>2.2.3.Final-redhat-00001</version>
     </dependency>
   </dependencies>
-  
-  <!-- <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${spring-boot.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <excludeGroupIds>io.dekorate,io.sundr</excludeGroupIds>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build> -->
 
   <build>
     <pluginManagement>
       <plugins>
-        <!-- <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
-          <configuration>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.6.0</version>
-        </plugin> -->
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>${spring-boot.version}</version>
+            <version>${version.spring.boot}</version>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
       <plugin>
-        <!-- <groupId>org.commonjava.maven.plugins</groupId>
-        <artifactId>project-sources-maven-plugin</artifactId>
-        <version>1.0</version> -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
-          <!-- <execution>
-            <id>project-sources-archive</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>archive</goal>
-            </goals>
-          </execution> -->
           <execution>
             <goals>
               <goal>repackage</goal>

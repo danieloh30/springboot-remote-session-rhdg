@@ -1,39 +1,57 @@
 package com.redhat.workshop.rhdg.controller;
 
-import com.redhat.workshop.rhdg.service.CacheService;
+import javax.servlet.http.HttpServletRequest;
+
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@EnableCaching
 public class CacheController {
 
-    @Autowired
-    private CacheService cacheService;
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
- 
-    @GetMapping("/greeting")
-    public String hello() {
-        return "Welcome, Spring Boot Session with Red Hat Data Grid!";
+    private final RemoteCacheManager cacheManager;
+
+    @Autowired
+    public CacheController(RemoteCacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+        this.cacheManager.administration().getOrCreateCache("sessions", "org.infinispan.DIST_SYNC");
     }
 
+    @RequestMapping("/session")
+    public Map<String, String> session(HttpServletRequest request) {
+        Map<String, String> result = new HashMap<>();
+        String sessionId = request.getSession(true).getId();
+        result.put("created:", sessionId);
+        logger.info(String.format("sessionId: %s", sessionId));
 
-    // @GetMapping("/create")
-    // public String createCache(@RequestParam(value = "name", defaultValue = CACHE_NAME) String cacheName) {
-    //     return cacheService.createCache(cacheName);
-    // }
+        // By default Infinispan integration for Spring Session will use 'sessions' cache.
+        logger.info(String.format("BBB: %s", cacheManager.getCache("sessions").get("created:")));
+       
+        result.put("active:", cacheManager.getCache("sessions").keySet().toString());
+        return result;
+    }
 
     @GetMapping("/put")
     public String putData(@RequestParam(value = "key") String keyString, @RequestParam(value = "value") String valueString) {
-        return cacheService.putSession(keyString, valueString);
+        return cacheManager.getCache("sessions").put(keyString, valueString).toString();
     }
 
     @GetMapping("/get")
     public String getData(@RequestParam(value = "key") String keyString) {
-       return cacheService.getSession(keyString);
+       return cacheManager.getCache("sessions").get(keyString).toString();
     }
 
 }
