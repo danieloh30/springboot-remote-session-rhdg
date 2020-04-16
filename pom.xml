@@ -1,115 +1,144 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.redhat.workshop</groupId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.redhat.com</groupId>
 	<artifactId>rhdg</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rhdg-demo</name>
-	<description>Demo project for Spring Boot with RHDG</description>
+	<name>ext-rhdg</name>
+	<description>Spring Boot Session with RHDG Tutorial</description>
 
-  <properties>
-    <version.infinispan>10.1.5.Final-redhat-00001</version.infinispan>   
-    <version.spring.boot>2.2.5.RELEASE</version.spring.boot> 
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+	<properties>
+        <version.spring.boot>2.2.5.RELEASE</version.spring.boot>
+        <version.spring.session>2.2.2.RELEASE</version.spring.session>
+        <version.infinispan>10.1.5.Final-redhat-00001</version.infinispan>
+    </properties>
 
-  <dependencyManagement>
-    <dependencies>
-       <dependency>
-           <groupId>org.infinispan</groupId>
-           <artifactId>infinispan-bom</artifactId>
-           <version>${version.infinispan}</version>
-           <type>pom</type>
-           <scope>import</scope>
-       </dependency>
-       <dependency>
-           <groupId>org.springframework.boot</groupId>
-           <artifactId>spring-boot-starter-parent</artifactId>
-           <version>${version.spring.boot}</version>
-           <type>pom</type>
-           <scope>import</scope>
-       </dependency>
-       <dependency>
-           <groupId>org.infinispan</groupId>
-           <artifactId>infinispan-spring-boot-starter</artifactId>
-           <version>2.2.3.Final-redhat-00001</version>
-       </dependency>
-    </dependencies>
-  </dependencyManagement>
+	<dependencyManagement>
+        <dependencies>
+            <!-- Spring defines its own dependency to Infinispan. We need to override it -->
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-bom</artifactId>
+                <version>${version.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+               <groupId>javax.transaction</groupId>
+               <artifactId>transaction-api</artifactId>
+               <version>1.1</version>
+           </dependency>
+           <dependency>
+               <groupId>javax.cache</groupId>
+               <artifactId>cache-api</artifactId>
+               <version>1.1.0.redhat-1</version>
+           </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <version>${version.spring.boot}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <version>${version.spring.boot}</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-      <version>${version.spring.boot}</version>
-    </dependency> -->
-    <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-spring-boot-starter-remote</artifactId>
-        <version>2.2.3.Final-redhat-00001</version>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
+	<dependencies>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-spring-boot-starter-embedded</artifactId>
+            <version>2.2.3.Final-redhat-00001</version>
+        </dependency>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-spring-boot-starter-remote</artifactId>
+			<version>2.2.3.Final-redhat-00001</version>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+            <version>${version.spring.session}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <version>${version.spring.boot}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+        </dependency>
+    </dependencies>
 
-  <repositories>
-    <repository>
-      <id>redhat-early-access</id>
-      <name>Red Hat Early Access Repository</name>
-      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
-    </repository>
-    <repository>
-      <id>redhat-ga</id>
-      <name>Red Hat GA Repository</name>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </repository>
-  </repositories>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${version.spring.boot}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>project-sources-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                <execution>
+                    <id>project-sources-archive</id>
+                    <phase>initialize</phase>
+                    <goals>
+                    <goal>archive</goal>
+                    </goals>
+                </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>redhat-early-access</id>
-      <name>Red Hat Early Access Repository</name>
-      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>redhat-ga</id>
-      <name>Red Hat GA Repository</name>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  
+    <repositories>
+        <repository>
+            <id>redhat</id>
+            <name>Red Hat Maven Repository</name>
+            <url>https://maven.repository.redhat.com/ga/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>redhat</id>
+            <name>Red Hat Maven Repository</name>
+            <url>https://maven.repository.redhat.com/ga/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

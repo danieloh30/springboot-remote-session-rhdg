@@ -51,4 +51,3 @@ oc annotate dc/cacheapp app.openshift.io/connects-to=rhdg-service --overwrite &&
 oc annotate dc/cacheapp app.openshift.io/vcs-ref=ocp-4.3 --overwrite && \
 oc label statefulset/rhdg-service app.kubernetes.io/part-of=catalog app.openshift.io/runtime=datagrid --overwrite
 ----
-
