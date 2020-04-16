@@ -17,7 +17,7 @@ Open a terminal window and change to the directory of the tutorial you want to r
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package spring-boot:repackage -DskipTests
+mvn clean package spring-boot:repackage
 ----
 
 === Install `DataGrid Operator` in OpenShift then create an `Infinispan Cluster`:

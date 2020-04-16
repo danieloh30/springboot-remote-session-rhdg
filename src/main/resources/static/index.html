@@ -64,7 +64,7 @@
     }
 
     $(document).ready(function () {
-        updateCached();
+        // updateCached();
         $("#invoke").click(function (e) {
             var begin = new Date();
             $("#greeting-result").text("Invoking the service...");
@@ -89,7 +89,7 @@
             e.preventDefault();
         });
 
-        setInterval(updateCached, 5000);
+        // setInterval(updateCached, 5000);
     });
 </script>
 

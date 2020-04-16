@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.redhat.com.rhdg.CacheListener;
+
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
@@ -29,11 +31,13 @@ public class EmbeddedCacheService {
       return manager -> {
          final Configuration ispnConfig = new ConfigurationBuilder()
                .clustering()
-               .cacheMode(CacheMode.DIST_SYNC)
+               .cacheMode(CacheMode.REPL_SYNC)
                .build();
 
-
+         // manager.addListener(new CacheListener());
          manager.defineConfiguration("sessions", ispnConfig);
+         manager.getCache("sessions").addListener(new CacheListener());
+         
       };
    }
 
@@ -42,6 +46,7 @@ public class EmbeddedCacheService {
       return () -> {
          GlobalConfigurationBuilder builder = GlobalConfigurationBuilder.defaultClusteredBuilder();
          builder.serialization().marshaller(new JavaSerializationMarshaller());
+         builder.transport().clusterName("rhdg");
          builder.serialization().whiteList().addClass("org.springframework.session.MapSession");
          builder.serialization().whiteList().addRegexp("java.util.*");
          return builder.build();
@@ -50,31 +55,38 @@ public class EmbeddedCacheService {
   
     @RestController
 	static class SessionController {
+
+      private int count = 0;
+
 		@Autowired
 		SpringEmbeddedCacheManager cacheManager;
 
 		@RequestMapping("/session")
 		public Map<String, String> createSession(HttpServletRequest request) {
-			Map<String, String> result = new HashMap<>();
-			String sessionId = request.getSession(true).getId();
-			result.put("created:", sessionId);
+
+         Map<String, String> result = new HashMap<>();
+			String sessionId = request.getSession().getId();
+         result.put("created:", sessionId);
+         
 			// By default Infinispan integration for Spring Session will use 'sessions' cache.
-			result.put("active:", cacheManager.getCache("sessions").getNativeCache().keySet().toString());
-			return result;
+         result.put("active:", cacheManager.getCache("sessions").getNativeCache().keySet().toString());
+         result.put("count:", String.valueOf(count));
+
+         count++;
+
+         System.out.println("[createSession] count: " + count);
+
+         return result;
+         
         }
         
-        @RequestMapping("/delete")
+      @RequestMapping("/delete")
 		public void deleteSession(HttpServletRequest request) {
 
-            request.getSession().invalidate();
+         request.getSession().invalidate();
+         count = 0;
+         System.out.println("[deleteSession] count: " + count);
 
-			// Map<String, String> result = new HashMap<>();
-			// String sessionId = request.getSession(true).getId();
-			// result.put("created:", sessionId);
-            // // By default Infinispan integration for Spring Session will use 'sessions' cache.
-            // result.put("active:", null);
-            
-			// return result;
 		}
 	}
 }
